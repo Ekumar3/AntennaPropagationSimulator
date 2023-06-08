@@ -9,4 +9,4 @@ Improved antenna propagation simulator.
 * Then click on the libraries tab and type G4P into the search bar.
 * Install G4P. 
 ![image](https://github.com/Ekumar3/AntennaPropagationSimulator/assets/91651283/c6471bed-4dc9-4de9-bdad-6f5bea940aa9)
-* Once it has been installed you can run the code by pressing ctrl + r or pressing the play button in the top left.
+* Once it has been installed you can run the code by pressing ctrl + r or pressing the play button in the top left of the Processing window.
