@@ -4,9 +4,11 @@ int numTimeSteps = 40;
 double[] x0 = new double[numTimeSteps];
 double[] y0 = new double[numTimeSteps];
 int t0, tf, tglobal, mode, N, R;
-double amp, angleLinearPol, ampRatioCircPol, f, pi;
+double amp, angleLinearPol, ampRatioCircPol, f, pi, alp, deg2rad;
 boolean nested;
 GCustomSlider sdr1, sdr2, sdr3;
+PVector center;
+float x1, y1, x2, y2;
 
 void setup() {
   size(800, 800);
@@ -23,10 +25,19 @@ void setup() {
   amp = 0.0;
   angleLinearPol = 0;
   ampRatioCircPol = 0.0;
+  deg2rad = pi/180;
+  alp = deg2rad*angleLinearPol;
   for (int i = 0; i < numTimeSteps; i++) {
     x0[i] = mouseX;
     y0[i] = mouseY;
   }
+  
+  center = new PVector(width/2, height/2);
+  x1 = center.x + cos((float)alp)*500;
+  y1 = center.y + sin((float)alp)*500;
+  x2 = center.x - cos((float)alp)*500;
+  y2 = center.y - sin((float)alp)*500;
+  
 
   GLabel instructions = new GLabel(this, 50, 50, 750, 100, "Press (1), (2), or (3) to choose which variable to change. Then press (-) or (+) to increase it's value. Reset the values with (r).");
   GLabel nestedLabel = new GLabel(this, 300, 70, 300, 100, "Enter nested-circles mode with (n).");
@@ -70,14 +81,17 @@ public void nestedHandler(GButton button, GEvent event) { nested = !nested;}
 void draw() {
   background(255);
   fill(255, 204);
-  double deg2rad = pi/180;
-  double alp = deg2rad*angleLinearPol;
 
   t0 = t0+1;
   t0 = t0 % numTimeSteps;
   tf = tf+1;
   tf = tf % numTimeSteps;
   tglobal = tglobal+1;
+  stroke(204, 102, 0);
+  line(center.x, center.y, x1, y1);
+  
+  line(center.x, center.y, x2, y2);
+  
 
   if (mode == 0) {
     x0[t0]=mouseX;
@@ -98,8 +112,7 @@ void draw() {
       int tip1 = (t0+i+2)%numTimeSteps;
       drawpart(x0[ti], y0[ti], x0[tip1], y0[tip1], i, numTimeSteps, R, 0);
     }
-    line((float)(mouseX + xlinrot),(float) (mouseY +ylinrot) ,(float) (mouseX - xlinrot), (float)(mouseY - ylinrot));
-    stroke(165);
+    line((float)(mouseX + xlinrot)*10,(float) (mouseY +ylinrot)*10 ,(float) (mouseX - xlinrot)*10, (float)(mouseY - ylinrot)*10);
   }
 }
 
@@ -136,11 +149,6 @@ void keyPressed() {
     keyIndex = key - '0';
     System.out.println("KeyIndex:" + keyIndex);
   }
-
-  if (keyIndex == 0) {
-    mode = 0;
-    System.out.println(0);
-  }
   if (keyIndex == 1) {
     mode = 1;
     System.out.println(1);
@@ -155,7 +163,6 @@ void keyPressed() {
   }
   System.out.println("Key pressed:" + key);
   if (key=='r') {
-    //mode = 0;
     amp = 0.0;
     sdr1.setValue((float)amp);
     angleLinearPol = 0.0;
@@ -171,10 +178,16 @@ void keyPressed() {
     if (mode==2) {
       angleLinearPol += 5;
       sdr2.setValue(sdr2.getValueF() + 5);
+      alp = deg2rad*angleLinearPol;
+      x1 = center.x + cos((float)alp)*500;
+      y1 = center.y + sin((float)alp)*500;
+      x2 = center.x - cos((float)alp)*500;
+      y2 = center.y - sin((float)alp)*500;
     }
     if (mode==3) {
       ampRatioCircPol =sdr3.getValueF() + 0.01;
       sdr3.setValue((float)ampRatioCircPol);
+      
     }
 
     System.out.println("Amplitude = "+ amp + " angleLinearPol= " + angleLinearPol + "  ampRatioCircPol= " + ampRatioCircPol);
@@ -190,6 +203,11 @@ void keyPressed() {
     if (mode==2) {
       angleLinearPol -= 5;
       sdr2.setValue(sdr2.getValueF() - 5);
+      alp = deg2rad*angleLinearPol;
+      x1 = center.x + cos((float)angleLinearPol)*500;
+      y1 = center.y + sin((float)angleLinearPol)*500;
+      x2 = center.x - cos((float)angleLinearPol)*500;
+      y2 = center.y - sin((float)angleLinearPol)*500;
     }
     if (mode==3) {
       ampRatioCircPol =sdr3.getValueF() - 0.01;
